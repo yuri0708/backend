@@ -16,39 +16,57 @@ import com.repositories.UserRepository;
 
 import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
         @Autowired
         UserRepository userRepository;
 
-        @PostMapping("/users")
-        public ResponseEntity<UserModel> saveUser(@RequestBody @Valid UserRecordDto userRecordDto) {
-            var userModel = new UserModel();
-            BeanUtils.copyProperties(userRecordDto, userModel);
-            return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(userModel));
-        }
-
-        @GetMapping("/users")
+        @GetMapping
         public ResponseEntity<List<UserModel>> getAllUsers(){
             return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
         }
         
-        @GetMapping("/users/{id}")
+        @GetMapping("/{id}")
         public ResponseEntity<Object> getOneUser(@PathVariable(value="id") UUID id){
-            Optional<UserModel> user1 = userRepository.findById(id);
-            if(user1.isEmpty()) {
+            Optional<UserModel> user = userRepository.findById(id);
+            if(user.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
             }
-            return ResponseEntity.status(HttpStatus.OK).body(user1.get());
+            return ResponseEntity.status(HttpStatus.OK).body(user.get());
         }
         
+        @PutMapping("{id}")
+        public ResponseEntity<Object> updateUser(@PathVariable(value="id") UUID id, @RequestBody @Valid UserRecordDto userRecordDto){
+            Optional<UserModel> user = userRepository.findById(id);
+            if(user.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
+            }
+            var userModel = user.get();
+            BeanUtils.copyProperties(userRecordDto, userModel);
+            return ResponseEntity.status(HttpStatus.OK).body("Usuário atualizado com sucesso!");
+        }
+
+        @DeleteMapping("{id}")
+        public ResponseEntity<Object> deleteUser(@PathVariable(value="id") UUID id){
+            Optional<UserModel> user = userRepository.findById(id);
+            if(user.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
+            }
+            userRepository.delete(user.get());
+            return ResponseEntity.status(HttpStatus.OK).body("Usuário deletado com sucesso!");
+        }
+
+
 }
