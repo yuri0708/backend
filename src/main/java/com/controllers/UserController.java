@@ -55,7 +55,7 @@ public class UserController {
             }
             var userModel = user.get();
             BeanUtils.copyProperties(userRecordDto, userModel);
-            return ResponseEntity.status(HttpStatus.OK).body("Usuário atualizado com sucesso!");
+            return ResponseEntity.status(HttpStatus.OK).body(userRepository.save(userModel));
         }
 
         @DeleteMapping("{id}")
