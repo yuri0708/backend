@@ -45,7 +45,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneTask(@PathVariable(value="idTarefa") UUID id){
+    public ResponseEntity<Object> getOneTask(@PathVariable(value="id") UUID id){
         Optional<TaskModel> task = taskRepository.findById(id);
         if(task.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tarefa não encontrada!");
@@ -54,7 +54,7 @@ public class TaskController {
     }
     
     @PutMapping("{id}")
-    public ResponseEntity<Object> updateTask(@PathVariable(value="idTarefa") UUID id, @RequestBody @Valid TaskRecordDto taskRecordDto){
+    public ResponseEntity<Object> updateTask(@PathVariable(value="id") UUID id, @RequestBody @Valid TaskRecordDto taskRecordDto){
         Optional<TaskModel> task = taskRepository.findById(id);
         if(task.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tarefa não encontrada!");
@@ -65,7 +65,7 @@ public class TaskController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Object> deleteTask(@PathVariable(value="idTarefa") UUID id){
+    public ResponseEntity<Object> deleteTask(@PathVariable(value="id") UUID id){
         Optional<TaskModel> task = taskRepository.findById(id);
         if(task.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tarefa não encontrada!");
