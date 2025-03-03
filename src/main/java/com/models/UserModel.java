@@ -1,12 +1,17 @@
 package com.models;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,6 +26,13 @@ public class UserModel implements Serializable{
     private String email;
     private String senha;
     private String telefone;
+
+    @ManyToMany
+    @JoinTable(
+        name = "USERS_TASKS",
+        joinColumns = @JoinColumn(name = "idUsuario"),
+        inverseJoinColumns = @JoinColumn(name = "idTarefa"))
+    private Set<TaskModel> tasks = new HashSet<>();
 
     public UUID getIdUsuario(){
         return idUsuario;
@@ -55,5 +67,13 @@ public class UserModel implements Serializable{
     }
     public void setTelefone(String telefone){
         this.telefone = telefone;
+    }
+
+    public Set<TaskModel> getTasks(){
+        return tasks;
+    }
+
+    public void setTasks(Set<TaskModel> tasks){
+        this.tasks = tasks;
     }
 }
